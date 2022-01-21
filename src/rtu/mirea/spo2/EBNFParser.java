@@ -84,11 +84,16 @@ public class EBNFParser {
             current_prod = new Pair("NONTERM_PROD", terms.get(i-1).getSecond());
         }
         else{
-            error("production: syntax error");
+            error("production: syntax error at " + i);
         }
         productions.put(current_prod, new ArrayList<>());
         expect("IS");
-        expr();
+        if(accept("REGEX")){
+            expect("EOL");
+        }
+        else{
+            expr();
+        }
         current_prod = new Pair("", "");
 //        expect("EOL");
     }

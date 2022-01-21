@@ -19,6 +19,7 @@ public class EBNFLexer {
         tokenPatterns = new HashMap<>();
         tokenPatterns.put("^([a-z_]{0,})$", "NONTERMINAL");
         tokenPatterns.put("^[A-Z_]{1,}$|^'[a-zа-я]{1,}'$|^'\\+'$|^'-'$|^'\\*'$|^'/'$|^'#'$|^'\\='$|^'\\=\\='$|^'>'$|^'>='$|^'<'$|^'<='$|^'\\('$|^'\\)'$|^'\\{'$|^'\\}'$|^';'$", "TERMINAL");
+//        tokenPatterns.put("^[A-Z_]{1,}$|^'[a-zа-я]{1,}'$|^'\\+'$|^'-'$|^'\\*'$|^'/'$|^'#'$|^'\\='$|^'\\=\\='$|^'>'$|^'>='$|^'<'$|^'<='$|^'\\('$|^'\\)'$|^'\\{'$|^'\\}'$|^';'$", "TERMINAL");
         tokenPatterns.put("^\\+$|^\\*$|^\\?$", "OP");
         tokenPatterns.put("^\\|$", "OR");
         tokenPatterns.put("^\n$|^\r$", "EOL");
@@ -95,9 +96,19 @@ public class EBNFLexer {
                     fitting_token = tokenPatterns.get(regex);
                 }
             }
-            if(fitting_token == "" && accum.charAt(0) == '\'')
+            if(fitting_token == "" && accum.charAt(0) == '\''){
+                int j = i + 1;
+                while(j < string.length() && string.charAt(j) != '\'') {
+                    accum.append(string.charAt(j));
+                    j++;
+                }
+                accum.append(string.charAt(j));
+                terms.add(new Pair("REGEX", accum.toString()));
+                accum = new StringBuilder();
+                i = j;
                 continue;
-            if(fitting_token == "" && accum.charAt(0) == '\0')
+            }
+            if(fitting_token == "" && accum.length() > 0 && accum.charAt(0) == '\0')
 //                terms.add(new Pair<>("EOL", "\n"));
                 break;
             if(!flag)

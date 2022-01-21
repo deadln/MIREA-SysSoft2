@@ -1,5 +1,5 @@
 lang -> production+
-production -> (TERMINAL | NONTERMINAL) IS expr
+production -> (TERMINAL | NONTERMINAL) IS ((REGEX EOL)| expr)
 expr -> (TERMINAL | NONTERMINAL | (L_BR expr R_BR)) ((OP | OR)? expr)* EOL
 
 

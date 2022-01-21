@@ -1,21 +1,34 @@
 lang = expr+
 expr = declaring_expr | assign_expr | if_expr | while_expr | do_while_expr | print_expr
-declaring_expr = VAR_TYPE VAR ('=' arithmetic_expr)? ';'
-assign_expr = VAR '=' arithmetic_expr ';'
-arithmetic_expr = value | ('(' arithmetic_expr ')') (OP arithmetic_expr)*
+declaring_expr = VAR_TYPE VAR (ASSIGN_OP arithmetic_expr)? SEP
+assign_expr = VAR ASSIGN_OP arithmetic_expr SEP
+arithmetic_expr = value | (L_BR arithmetic_expr R_BR) (OP arithmetic_expr)*
 value = NUMBER | VAR
 if_expr = if_head if_body (else_head else_body)?
-if_head = 'ако' condition
-condition = '(' logical_expression ')'
+if_head = IF_KW condition
+condition = L_BR logical_expression R_BR
 logical_expression = value (LOGICAL_OP value)?
-if_body = '{' expr+ '}'
-else_head = 'инако' (if_head)?
-else_body = '{' expr+ '}'
+if_body = L_S_BR expr+ R_S_BR
+else_head = ELSE_KW (if_head)?
+else_body = L_S_BR expr+ R_S_BR
 while_expr = while_head while_body
-while_head = 'покаместъ' condition
-while_body = '{' expr+ '}'
-do_while_expr = 'делати' while_body while_head ';'
-print_expr = 'изъявити' value ';'
-OP = '+' | '-' | '*' | '/' | '#'
-VAR_TYPE = 'целый' | 'плавающий' | 'суть' | 'испис' | 'замет'
-LOGICAL_OP = '==' | '>' | '>=' | '<' | '<='
+while_head = WHILE_KW condition
+while_body = L_S_BR expr+ R_S_BR
+do_while_expr = DO_KW while_body while_head SEP
+print_expr = PRINT_KW value SEP
+NUMBER = '^0|[1-9&&[^s]][0-9&&[^s]]*$'
+VAR = '^([a-zA-Z_]{1}[a-zA-Z_0-9]{0,})$|^([а-яА-Я_]{1}[а-яА-Я_0-9]{0,})$'
+OP = '^\\+$|^-$|^\\*$|^/$|^#$'
+LOGICAL_OP = '^\\==$|^>$|^>=$|^<$|^<=$'
+VAR_TYPE = '^целый$|^плавающий$|^срока$|^символъ$|^суть$|^испис$|^замет$'
+ASSIGN_OP = '^=$'
+IF_KW = '^ако$'
+ELSE_KW = '^инако$'
+WHILE_KW = '^покаместъ$'
+DO_KW = '^делати$'
+PRINT_KW = '^изъявити$'
+L_BR = '^\\($'
+R_BR = '^\\)$'
+L_S_BR = '^\\{$'
+R_S_BR = '^\\}$'
+SEP = '^;$'
