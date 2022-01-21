@@ -1,0 +1,4 @@
+lang -> expr+
+expr -> nonterminal
+nonterminal -> (terminal | nonterminal | ("(" nonterminal ")")) (OP)? (nonterminal)*
+terminal -> NUMBER | VAR | ( " TERMINAL " (OR " TERMINAL " )* )

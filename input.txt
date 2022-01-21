@@ -1,0 +1,21 @@
+lang = expr+
+expr = declaring_expr | assign_expr | if_expr | while_expr | do_while_expr | print_expr
+declaring_expr = VAR_TYPE VAR ('=' arithmetic_expr)? ';'
+assign_expr = VAR '=' arithmetic_expr ';'
+arithmetic_expr = value | ('(' arithmetic_expr ')') (OP arithmetic_expr)*
+value = NUMBER | VAR
+if_expr = if_head if_body (else_head else_body)?
+if_head = 'ако' condition
+condition = '(' logical_expression ')'
+logical_expression = value (LOGICAL_OP value)?
+if_body = '{' expr+ '}'
+else_head = 'инако' (if_head)?
+else_body = '{' expr+ '}'
+while_expr = while_head while_body
+while_head = 'покаместъ' condition
+while_body = '{' expr+ '}'
+do_while_expr = 'делати' while_body while_head ';'
+print_expr = 'изъявити' value ';'
+OP = '+' | '-' | '*' | '/' | '#'
+VAR_TYPE = 'целый' | 'плавающий' | 'суть' | 'испис' | 'замет'
+LOGICAL_OP = '==' | '>' | '>=' | '<' | '<='
