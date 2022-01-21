@@ -1,4 +1,7 @@
-lang -> expr+
-expr -> nonterminal
-nonterminal -> (terminal | nonterminal | ("(" nonterminal ")")) (OP)? (nonterminal)*
+lang -> production+
+production -> (TERMINAL | NONTERMINAL) IS expr
+expr -> (TERMINAL | NONTERMINAL | (L_BR expr R_BR)) ((OP | OR)? expr)* EOL
+
+
+-------------------------------------------------------------------
 terminal -> NUMBER | VAR | ( " TERMINAL " (OR " TERMINAL " )* )

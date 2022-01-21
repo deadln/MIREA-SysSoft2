@@ -26,20 +26,22 @@ public class Main {
         System.out.println((int)source.charAt(12));
 
         System.out.println("****************************************РАБОТА ЛЕКСЕРА****************************************");
-        HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> terms = EBNFLexer.getTokensList(source);
+        ArrayList<Pair<String, String>> terms = EBNFLexer.getTokensList(source);
         System.out.println("**************");
         System.out.println("СПИСОК ТОКЕНОВ");
         System.out.println("**************");
-        for(var term: terms.keySet())
-        {
+        for(var term: terms){
             System.out.println(term);
-            for(var subterm: terms.get(term)){
-                System.out.println("\t" + subterm);
-//                if(!subterm.getFirst().equals("WS"))
-//                    spaceless_terms.get(term).add(subterm);
+        }
+        System.out.println(terms.get(4));
+        System.out.println(terms.get(5));
+        HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> productions = EBNFParser.getProductions(terms);
+
+        for(var production : productions.keySet()){
+            System.out.println(production);
+            for(var term : productions.get(production)){
+                System.out.println("\t" + term);
             }
-//            if(!tok.getFirst().equals("WS"))
-//                spaceless_tokens.add(tok);
         }
     }
 }

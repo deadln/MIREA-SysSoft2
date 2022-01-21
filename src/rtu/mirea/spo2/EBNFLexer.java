@@ -62,11 +62,12 @@ public class EBNFLexer {
 
     }
 
-    public static HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> getTokensList(String string) {
+    public static ArrayList<Pair<String, String>> getTokensList(String string) {
         initTokenMaps();
 
         string = string + "\0";
-        HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> terms = new HashMap<>();
+//        HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> terms = new HashMap<>();
+        ArrayList<Pair<String, String>> terms = new ArrayList<>();
         StringBuilder accum = new StringBuilder();
         ArrayList<String> prevTokens = new ArrayList<>();
         boolean flag, term_filling = false;
@@ -97,6 +98,7 @@ public class EBNFLexer {
             if(fitting_token == "" && accum.charAt(0) == '\'')
                 continue;
             if(fitting_token == "" && accum.charAt(0) == '\0')
+//                terms.add(new Pair<>("EOL", "\n"));
                 break;
             if(!flag)
             {
@@ -118,21 +120,22 @@ public class EBNFLexer {
 //                }
                 else
                 {
-                    if(fitting_token.equals("WS") || fitting_token.equals("IS")){
+                    if(fitting_token.equals("WS")){ // || fitting_token.equals("IS")){
                         ;
                     }
-                    else if(fitting_token.equals("EOL")){
-                        term_filling = false;
-                    }
+//                    else if(fitting_token.equals("EOL")){
+//                        term_filling = false;
+//                    }
                     else{
-                        if(!term_filling && (fitting_token.equals("NONTERMINAL") || fitting_token.equals("TERMINAL"))){
-                            term_filling = true;
-                            current_term = new Pair(fitting_token, accum.substring(0, accum.length() - 1));
-                            terms.put(current_term, new ArrayList<>());
-                        }
-                        else{
-                            terms.get(current_term).add(new Pair(fitting_token, accum.substring(0, accum.length() - 1)));
-                        }
+//                        if(!term_filling && (fitting_token.equals("NONTERMINAL") || fitting_token.equals("TERMINAL"))){
+//                            term_filling = true;
+//                            current_term = new Pair(fitting_token, accum.substring(0, accum.length() - 1));
+//                            terms.put(current_term, new ArrayList<>());
+//                        }
+//                        else{
+//                            terms.get(current_term).add(new Pair(fitting_token, accum.substring(0, accum.length() - 1)));
+//                        }
+                        terms.add(new Pair(fitting_token, accum.substring(0, accum.length() - 1)));
                     }
 
                     System.out.println("+TOKEN: " + "(" + fitting_token + ", " + accum.substring(0, accum.length() - 1) + ")");
@@ -160,17 +163,23 @@ public class EBNFLexer {
 //            System.out.println("+TOKEN: " + accum);
 //            tokens.add(new Pair<String, String>(prevTokens.get(0), accum.toString()));
 //        }
-        HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> spaceless_terms = new HashMap<>();
-        for(var term: terms.keySet())
-        {
-            spaceless_terms.put(term, new ArrayList<>());
-            for(var subterm: terms.get(term)){
-                if(!subterm.getFirst().equals("WS") || !subterm.getFirst().equals("IS") || !subterm.getFirst().equals("EOL"))
-                    spaceless_terms.get(term).add(subterm);
+        terms.add(new Pair<>("EOL", "\n"));
+        ArrayList<Pair<String, String>> spaceless_terms = new ArrayList<>();
+        for(var term: terms){
+            if(!term.getFirst().equals("WS") && !term.getSecond().equals("\r")){
+                spaceless_terms.add(term);
             }
-//            if(!tok.getFirst().equals("WS"))
-//                spaceless_tokens.add(tok);
         }
+//        for(var term: terms.keySet())
+//        {
+//            spaceless_terms.put(term, new ArrayList<>());
+//            for(var subterm: terms.get(term)){
+//                if(!subterm.getFirst().equals("WS") || !subterm.getFirst().equals("IS") || !subterm.getFirst().equals("EOL"))
+//                    spaceless_terms.get(term).add(subterm);
+//            }
+////            if(!tok.getFirst().equals("WS"))
+////                spaceless_tokens.add(tok);
+//        }
         return spaceless_terms;
     }
 }
