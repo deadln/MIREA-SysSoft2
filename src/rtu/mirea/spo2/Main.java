@@ -33,13 +33,11 @@ public class Main {
         for(var term: terms){
             System.out.println(term);
         }
-        System.out.println(terms.get(4));
-        System.out.println(terms.get(5));
-        HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> productions = EBNFParser.getProductions(terms);
+        ArrayList<Pair<Pair<String, String>, ArrayList<Pair<String, String>>>> productions = EBNFParser.getProductions(terms);
 
-        for(var production : productions.keySet()){
-            System.out.println(production);
-            for(var term : productions.get(production)){
+        for(var production : productions){
+            System.out.println(production.getFirst());
+            for(var term : production.getSecond()){
                 System.out.println("\t" + term);
             }
         }

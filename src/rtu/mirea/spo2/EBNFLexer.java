@@ -103,7 +103,7 @@ public class EBNFLexer {
                     j++;
                 }
                 accum.append(string.charAt(j));
-                terms.add(new Pair("REGEX", accum.toString()));
+                terms.add(new Pair("TERMINAL", accum.toString()));
                 accum = new StringBuilder();
                 i = j;
                 continue;
@@ -146,7 +146,10 @@ public class EBNFLexer {
 //                        else{
 //                            terms.get(current_term).add(new Pair(fitting_token, accum.substring(0, accum.length() - 1)));
 //                        }
-                        terms.add(new Pair(fitting_token, accum.substring(0, accum.length() - 1)));
+                        if(accum.substring(0, accum.length() - 1).equals("fragment"))
+                            terms.add(new Pair("FRAGMENT", accum.substring(0, accum.length() - 1)));
+                        else
+                            terms.add(new Pair(fitting_token, accum.substring(0, accum.length() - 1)));
                     }
 
                     System.out.println("+TOKEN: " + "(" + fitting_token + ", " + accum.substring(0, accum.length() - 1) + ")");

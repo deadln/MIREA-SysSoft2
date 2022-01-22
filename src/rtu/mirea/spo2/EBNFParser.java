@@ -2,14 +2,18 @@ package rtu.mirea.spo2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class EBNFParser {
     static ArrayList<Pair<String, String>> terms;
     static HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> productions;
+    static ArrayList<Pair<String, String>> productions_order;
+    static HashSet<Pair<String, String>> fragments;
     static Pair<String, String> current_prod = new Pair("", "");
 
     static int i = 0;
     static String term;
+    static boolean fragment_flag = false;
     public static void nextTerm(){
         if(!current_prod.equals(new Pair<>("", "")) && term != "IS" && term != "EOL"){
             productions.get(current_prod).add(terms.get(i));
@@ -77,8 +81,13 @@ public class EBNFParser {
     }
 
     public static void production(){
+        if(accept("FRAGMENT")){
+            fragment_flag = true;
+        }
         if(accept("TERMINAL")){
             current_prod = new Pair("TERM_PROD", terms.get(i-1).getSecond());
+            if(fragment_flag)
+                fragments.add(current_prod);
         }
         else if (accept("NONTERMINAL")){
             current_prod = new Pair("NONTERM_PROD", terms.get(i-1).getSecond());
@@ -87,6 +96,8 @@ public class EBNFParser {
             error("production: syntax error at " + i);
         }
         productions.put(current_prod, new ArrayList<>());
+        productions_order.add(current_prod);
+        fragment_flag = false;
         expect("IS");
         if(accept("REGEX")){
             expect("EOL");
@@ -107,13 +118,21 @@ public class EBNFParser {
 
 
 
-    public static HashMap<Pair<String, String>, ArrayList<Pair<String, String>>> getProductions(ArrayList<Pair<String, String>> terms){
+    public static ArrayList<Pair<Pair<String, String>, ArrayList<Pair<String, String>>>> getProductions(ArrayList<Pair<String, String>> terms){
         EBNFParser.terms = terms;
         term = terms.get(i).getFirst();
         productions = new HashMap<>();
+        fragments = new HashSet<>();
+        productions_order = new ArrayList<>();
         lang();
+        System.out.println("FRAGMENTS " + fragments);
+
+        ArrayList<Pair<Pair<String, String>, ArrayList<Pair<String, String>>>> res = new ArrayList<>();
+        for(var prod : productions_order){
+            res.add(new Pair(prod, productions.get(prod)));
+        }
 
 
-        return productions;
+        return res;
     }
 }
